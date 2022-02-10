@@ -41,6 +41,13 @@ class ArticleCrudController extends CrudController
                 'model'     => "App\Models\Tag", // foreign key model
                 'attribute' => 'name', // foreign key attribute that is shown to user
                 'pivot'     => true, // on create&update, do you need to add/delete pivot table entries?
+            ],
+            [
+                'label' => "Article Image",
+                'name' => "image",
+                'type' => 'image',
+                'crop' => true, // set to true to allow cropping, false to disable
+                'aspect_ratio' => 1, // omit or set to 0 to allow any aspect ratio
             ]
         ];
     }
@@ -73,6 +80,9 @@ class ArticleCrudController extends CrudController
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
+        $this->crud->set('show.setFromDb', false);
+        $this->crud->addColumns($this->getFieldsData(TRUE));
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -90,7 +100,7 @@ class ArticleCrudController extends CrudController
     {
         CRUD::setValidation(ArticleRequest::class);
 
-        CRUD::field('id');
+//        CRUD::field('id');
         CRUD::field('title');
         CRUD::field('content');
         CRUD::field('created_at');
