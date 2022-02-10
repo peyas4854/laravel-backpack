@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ArticleRequest;
+use App\Models\Tag;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -83,6 +84,17 @@ class ArticleCrudController extends CrudController
         $this->crud->set('show.setFromDb', false);
         $this->crud->addColumns($this->getFieldsData(TRUE));
 
+        $this->crud->addFilter([
+            'name'  => 'id',
+            'type'  => 'select2',
+            'label' => 'Tag'
+        ], function () {
+            return Tag::all()->pluck('name','id')->toArray();
+        }, function ($value) { // if the filter is active
+             $this->crud->addClause('where', 'id', $value);
+        });
+
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -132,4 +144,6 @@ class ArticleCrudController extends CrudController
         $this->crud->set('show.setFromDb', false);
         $this->crud->addColumns($this->getFieldsData(TRUE));
     }
+
+
 }
